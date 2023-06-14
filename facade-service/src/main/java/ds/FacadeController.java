@@ -13,38 +13,20 @@ import java.util.UUID;
 @Slf4j
 public class FacadeController {
 
-    WebClient loggingWebClient = WebClient.create("http://localhost:8081");
-    WebClient messagesWebClient = WebClient.create("http://localhost:8082");
+    public FacadeService facadeService;
+
+    public FacadeController(FacadeService facadeService) {
+        this.facadeService = facadeService;
+    }
 
     @GetMapping()
     public String getMessages() {
-        var loggingResponse = loggingWebClient
-                .get()
-                .uri("/logging")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        var messageResponse = messagesWebClient
-                .get()
-                .uri("/message")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        return loggingResponse + " : " + messageResponse;
+        return facadeService.getMessages();
     }
 
     @PostMapping()
     public void writeMessage(@RequestBody String body) {
-        var msg = new Message(UUID.randomUUID(), body);
-        log.info("Message {}", msg);
-        loggingWebClient.post()
-                .uri("/logging")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(msg), Message.class)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
-
+        facadeService.writeMessage(body);
     }
 
 }
