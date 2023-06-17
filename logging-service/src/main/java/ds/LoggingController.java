@@ -1,14 +1,8 @@
 package ds;
 
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 import ds.service.LoggingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/logging")
@@ -29,10 +23,8 @@ public class LoggingController {
 
     @PostMapping()
     public void writeMessage(@RequestBody Message msg) {
-
         loggingService.writeMessage(msg);
     }
-
 
 
 }

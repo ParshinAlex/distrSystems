@@ -2,6 +2,7 @@ package ds;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -24,20 +25,11 @@ public class FacadeService {
     private final List<WebClient> messagesWebClients;
 
     public FacadeService(FacadeKafka facadeKafka,
-                         @Value("${external.service.logging.node1}") String loggingServiceNode1,
-                         @Value("${external.service.logging.node2}") String loggingServiceNode2,
-                         @Value("${external.service.logging.node3}") String loggingServiceNode3,
-                         @Value("${external.service.messages.node1}") String messagesServiceNode1,
-                         @Value("${external.service.messages.node2}") String messagesServiceNode2
-    ) {
+                         @Qualifier("loggingServiceWebClients") List<WebClient> loggingWebClients,
+                         @Qualifier("messagesServiceWebClients") List<WebClient> messagesWebClients) {
         this.facadeKafka = facadeKafka;
-        loggingWebClients = List.of(
-                WebClient.create(loggingServiceNode1),
-                WebClient.create(loggingServiceNode2),
-                WebClient.create(loggingServiceNode3));
-        messagesWebClients = List.of(
-                WebClient.create(messagesServiceNode1),
-                WebClient.create(messagesServiceNode2));
+        this.loggingWebClients = loggingWebClients;
+        this.messagesWebClients = messagesWebClients;
 
     }
 
